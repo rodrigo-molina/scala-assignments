@@ -178,7 +178,7 @@ object Huffman {
 
   /**
    * What does the secret message say? Can you decode it?
-   * For the decoding use the `frenchCode' Huffman tree defined above.
+   * For the decoding use the 'frenchCode' Huffman tree defined above.
    */
   val secret: List[Bit] = List(0,0,1,1,1,0,1,0,1,1,1,0,0,1,1,0,1,0,0,1,1,0,1,0,1,1,0,0,1,1,1,1,1,0,1,0,1,1,0,0,0,0,1,0,1,1,1,0,0,1,0,0,1,0,0,0,1,0,0,0,1,0,1)
 
@@ -194,7 +194,17 @@ object Huffman {
    * This function encodes `text` using the code tree `tree`
    * into a sequence of bits.
    */
-    def encode(tree: CodeTree)(text: List[Char]): List[Bit] = ???
+    def encode(tree: CodeTree)(text: List[Char]): List[Bit] = {
+      def encodeChar(tree: CodeTree, char: Char) : List[Bit] = {
+        tree match {
+          case Fork(l, r, chars, _) => if(chars.head == char) List(0) ::: encodeChar(l, char) else List(1) ::: encodeChar(r, char)
+          case Leaf(_, _) => Nil
+        }
+      }
+
+      if (text.isEmpty) Nil
+      else encodeChar(tree, text.head) ::: encode(tree)(text.tail)
+    }
   
   // Part 4b: Encoding using code table
 
